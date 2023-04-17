@@ -1,14 +1,39 @@
-import { FormEvent, Dispatch, SetStateAction, FunctionComponent } from "react";
+import { FormEvent, Dispatch, SetStateAction, FunctionComponent, useRef, useEffect, KeyboardEvent } from "react";
 import { Regalos } from '../../App'
 import { StyledModal } from './styles'
 
 type Props = {
     regalos: Regalos[]
     setRegalos: Dispatch<SetStateAction<Regalos[]>>
-    setShowModal: Dispatch<SetStateAction<boolean>>
+    regaloEdit: Regalos | undefined;
+    handleCloseModal: () => void;
 }
 
-export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, setShowModal }) => {
+export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdit, handleCloseModal }) => {
+    const ref = useRef<HTMLDivElement>(null)
+
+    const closeModal = (ev: Event) => {
+        const { key } = ev as unknown as KeyboardEvent<Window>;
+        if (key === "Escape") {
+            handleCloseModal()
+        }
+    }
+    const closeModalClick = (ev: Event) => {
+        const { target } = ev;
+        if (target === ref.current) {
+            handleCloseModal();
+        }
+    }
+    useEffect(() => {
+        window.addEventListener("keydown", closeModal)
+        window.addEventListener("click", closeModalClick)
+        return () => {
+            window.removeEventListener("keydown", closeModal)
+            window.removeEventListener("click", closeModalClick)
+        }
+    }, [])
+
+
     const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
         ev.preventDefault()
 
@@ -28,9 +53,11 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, setShowMo
         if (regalo) {
             const found = regalos.find((r) => r.name === regalo);
             if (found) {
-
                 const newFound = { ...found };
-                newFound.count = newFound.count + count;
+                newFound.count = regaloEdit ? count : newFound.count + count;
+                newFound.imagen = imagen;
+                newFound.name = regalo;
+                newFound.to = to;
 
                 const copyRegalos = [...regalos];
 
@@ -42,9 +69,8 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, setShowMo
 
             } else {
                 setRegalos([...regalos, { name: regalo, count, imagen, to }])
-
             }
-            setShowModal(false);
+            handleCloseModal();
         }
         else {
 
@@ -52,31 +78,54 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, setShowMo
         }
     }
 
-    const handleCloseModal = () => {
-        setShowModal(false)
-    }
 
-    return <StyledModal>
+    // console.log(ref.current)
+
+    return <StyledModal ref={ref}>
         <div className="modal">
-            <button className="modal__button" onClick={handleCloseModal}>x</button>
+            <button className="modal__button" onClick={handleCloseModal} aria-label="Cerrar formulario">x</button>
             <form className="modal__form" action="" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="regalo-input">Escribe tu regalo</label>
-                    <input type="text" id="regalo-input" name="regalo" required />
+                    <input
+                        type="text"
+                        id="regalo-input"
+                        name="regalo"
+                        required
+                        defaultValue={regaloEdit && regaloEdit.name}
+                    />
                 </div>
                 <div>
                     <label htmlFor="to">Destinatario:</label>
-                    <input type="text" id="to" name="to" required />
+                    <input
+                        type="text"
+                        id="to"
+                        name="to"
+                        required
+                        defaultValue={regaloEdit && regaloEdit.to}
+                    />
                 </div>
                 <div>
                     <label htmlFor="imagen">Imagen</label>
-                    <input type="text" id="imagen" name="imagen" />
+                    <input
+                        type="text"
+                        id="imagen"
+                        name="imagen"
+                        defaultValue={regaloEdit && regaloEdit.imagen}
+                    />
                 </div>
                 <div>
                     <label htmlFor="count">Cantidad:</label>
-                    <input type="number" id="count" defaultValue={1} min={1} name="count" required />
+                    <input
+                        type="number"
+                        id="count"
+                        min={1}
+                        name="count"
+                        required
+                        defaultValue={regaloEdit ? regaloEdit.count : 1}
+                    />
                 </div>
-                <button className="modal__form-button">Agregar</button>
+                <button className="modal__form-button">{regaloEdit ? "Guardar" : "Agregar"}</button>
             </form>
         </div>
     </StyledModal>

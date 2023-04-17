@@ -19,6 +19,8 @@ function App() {
   ))
   const [showModal, setShowModal] = useState(false)
 
+  const [regaloEdit, setRegaloEdit] = useState<Regalos>();
+
   useEffect(() => {
     localStorage.setItem("regalos", JSON.stringify(regalos));
   }, [regalos])
@@ -35,6 +37,19 @@ function App() {
     setShowModal(true)
   }
 
+  const handleEdit = (regalo: Regalos) => {
+    const regaloEdit = regalos.find((r) => r.name === regalo.name)
+    setRegaloEdit(regaloEdit)
+    setShowModal(true)
+  }
+  // console.log(regaloEdit)
+  const handleCloseModal = () => {
+    setRegaloEdit(undefined)
+    setShowModal(false);
+
+  }
+
+
   return (
     <div className="container">
       <h1 className="titulo-regalos">Regalos</h1>
@@ -44,12 +59,12 @@ function App() {
       {regalos.length === 0 ? <p>No hay regalos</p> : <ul>
         {regalos.map((regalo) => {
 
-          return <Regalo regalo={regalo} handleDelete={handleDelete} key={regalo.name} />
+          return <Regalo regalo={regalo} handleDelete={handleDelete} handleEdit={handleEdit} key={regalo.name} />
 
         })}
       </ul>}
 
-      {showModal && <Modal regalos={regalos} setRegalos={setRegalos} setShowModal={setShowModal} />}
+      {showModal && <Modal handleCloseModal={handleCloseModal} regaloEdit={regaloEdit} regalos={regalos} setRegalos={setRegalos} />}
 
     </div>
   )
