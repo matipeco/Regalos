@@ -11,7 +11,7 @@ export const StyledRegalo = styled.li`
         font-weight: 500;
     }
     button{
-        position: absolute;
+        /* position: absolute; */
         top: 0;
         right: 0;
         padding: 5px 8px;

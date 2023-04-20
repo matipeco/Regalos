@@ -1,15 +1,21 @@
-import { FormEvent, Dispatch, SetStateAction, FunctionComponent, useRef, useEffect, KeyboardEvent } from "react";
-import { Regalos } from '../../App'
+import { FormEvent, Dispatch, SetStateAction, FunctionComponent, useRef, useEffect, KeyboardEvent, useState, ChangeEvent } from "react";
+import { ModalType, Regalos } from '../../App'
 import { StyledModal } from './styles'
+import { transformEntries } from './utils'
+import { v4 } from "uuid";
 
 type Props = {
     regalos: Regalos[]
     setRegalos: Dispatch<SetStateAction<Regalos[]>>
     regaloEdit: Regalos | undefined;
+    type: ModalType;
     handleCloseModal: () => void;
 }
 
-export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdit, handleCloseModal }) => {
+const REGALOS_RANDOM = ["boxer", "desodorante", "clarinete", "destornillador", "raqueta"];
+
+export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdit, handleCloseModal, type }) => {
+    const [inputValue, setInputValue] = useState(regaloEdit && regaloEdit.name);
     const ref = useRef<HTMLDivElement>(null)
 
     const closeModal = (ev: Event) => {
@@ -36,7 +42,6 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdi
 
     const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
         ev.preventDefault()
-
         // 3 MANERAS DE OBTENER LOS DATOS DE MIS INPUTS
         // crear el estado y toda la bola
         // console.log("elements:" + ev.currentTarget.elements.item(0))
@@ -45,41 +50,32 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdi
         const dataForm = new FormData(ev.currentTarget);
         const entries = Object.fromEntries(dataForm.entries())
 
-        const regalo = entries.regalo.toString().trim();
-        const count = Number(entries.count);
-        const imagen = entries.imagen.toString();
-        const to = entries.to.toString();
+        const regalo = transformEntries(entries);
 
-        if (regalo) {
-            const found = regalos.find((r) => r.name === regalo);
-            if (found) {
-                const newFound = { ...found };
-                newFound.count = regaloEdit ? count : newFound.count + count;
-                newFound.imagen = imagen;
-                newFound.name = regalo;
-                newFound.to = to;
-
-                const copyRegalos = [...regalos];
-
-                const index = copyRegalos.findIndex((r) => r.name === newFound.name);
-
-                copyRegalos.splice(index, 1, newFound);
-
-                setRegalos(copyRegalos);
-
-            } else {
-                setRegalos([...regalos, { name: regalo, count, imagen, to }])
-            }
-            handleCloseModal();
+        if (type === "create" || type === "duplicate") {
+            setRegalos([...regalos, { ...regalo, id: v4() }])
         }
         else {
-
-            alert("El regalo que desea agregar ya esta en la lista o el regalo es invalido")
+            //Busca el indide del elemento a reemplazar
+            const index = regalos.findIndex((r) => r.id === regaloEdit!.id);
+            //Nos hacemos copia por el splice
+            const copiaRegalos = [...regalos];
+            //reemplazamos y agregamos el id que ya tenia el regalo
+            copiaRegalos.splice(index, 1, { ...regalo, id: regaloEdit!.id })
+            setRegalos(copiaRegalos)
         }
+        handleCloseModal();
     }
 
+    const handleRandom = () => {
+        const indexRandom = Math.ceil(Math.random() * (REGALOS_RANDOM.length - 1));
+        const regaloFound = REGALOS_RANDOM[indexRandom];
+        setInputValue(regaloFound);
 
-    // console.log(ref.current)
+    }
+    const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(ev.target.value);
+    }
 
     return <StyledModal ref={ref}>
         <div className="modal">
@@ -92,8 +88,10 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdi
                         id="regalo-input"
                         name="regalo"
                         required
-                        defaultValue={regaloEdit && regaloEdit.name}
+                        value={inputValue}
+                        onChange={handleChange}
                     />
+                    <button type="button" onClick={handleRandom}>Sorprendeme!</button>
                 </div>
                 <div>
                     <label htmlFor="to">Destinatario:</label>
@@ -103,6 +101,16 @@ export const Modal: FunctionComponent<Props> = ({ regalos, setRegalos, regaloEdi
                         name="to"
                         required
                         defaultValue={regaloEdit && regaloEdit.to}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="price">Precio:</label>
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        required
+                        defaultValue={regaloEdit && regaloEdit.price}
                     />
                 </div>
                 <div>

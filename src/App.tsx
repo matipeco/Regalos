@@ -3,13 +3,22 @@ import "./App.css"
 import { useState, useEffect } from 'react'
 import { Modal } from './components/Modal'
 import { Regalo } from './components/Regalo'
-
+import { ModalPreview } from "./components/ModalPreview"
 
 export type Regalos = {
+  id: string
   name: string
   count: number
   imagen: string
   to: string
+  price: number
+}
+
+export type ModalType = "create" | "edit" | "duplicate";
+
+type Modal = {
+  show: boolean
+  type: ModalType;
 }
 
 function App() {
@@ -17,7 +26,12 @@ function App() {
   const [regalos, setRegalos] = useState<Regalos[]>(() => (
     JSON.parse(localStorage.getItem("regalos") || "[]")
   ))
-  const [showModal, setShowModal] = useState(false)
+  const [modal, setModal] = useState<Modal>({
+    show: false,
+    type: "create"
+  })
+
+  const [modalPreview, setModalPreview] = useState(false);
 
   const [regaloEdit, setRegaloEdit] = useState<Regalos>();
 
@@ -33,38 +47,62 @@ function App() {
   const handleClear = () => {
     setRegalos([]);
   }
-  const handleShowModal = () => {
-    setShowModal(true)
-  }
 
-  const handleEdit = (regalo: Regalos) => {
-    const regaloEdit = regalos.find((r) => r.name === regalo.name)
-    setRegaloEdit(regaloEdit)
-    setShowModal(true)
-  }
-  // console.log(regaloEdit)
   const handleCloseModal = () => {
     setRegaloEdit(undefined)
-    setShowModal(false);
-
+    setModal({
+      show: false,
+      type: "create"
+    });
   }
 
+  const openModal = (type: ModalType, regalo?: Regalos) => {
+
+    setRegaloEdit(regalo)
+    setModal({
+      show: true,
+      type: type
+    })
+  }
+
+  const openModalPreview = () => {
+    setModalPreview(true)
+  }
+
+  const TOTAL_PRICE = regalos.reduce((acc, current) => {
+    return acc + current.price;
+  }, 0)
 
   return (
     <div className="container">
       <h1 className="titulo-regalos">Regalos</h1>
       {regalos.length !== 0 && <button onClick={handleClear} className="boton-todos">Borrar todos</button>}
-      <button onClick={handleShowModal}>Agregar Regalos</button>
+      <button onClick={() => openModal("create")}>Agregar Regalos</button>
 
       {regalos.length === 0 ? <p>No hay regalos</p> : <ul>
         {regalos.map((regalo) => {
-
-          return <Regalo regalo={regalo} handleDelete={handleDelete} handleEdit={handleEdit} key={regalo.name} />
-
+          return (
+            <Regalo
+              regalo={regalo}
+              handleDelete={handleDelete}
+              openModal={openModal}
+              key={regalo.id}
+            />
+          )
         })}
       </ul>}
-
-      {showModal && <Modal handleCloseModal={handleCloseModal} regaloEdit={regaloEdit} regalos={regalos} setRegalos={setRegalos} />}
+      <p>Total: $ {TOTAL_PRICE} </p>
+      {regalos.length > 0 && <button onClick={openModalPreview}>Previsualizar</button>}
+      {modal.show && (
+        <Modal
+          handleCloseModal={handleCloseModal}
+          regaloEdit={regaloEdit}
+          regalos={regalos}
+          setRegalos={setRegalos}
+          type={modal.type}
+        />
+      )}
+      {modalPreview && <ModalPreview regalos={regalos} setModalPreview={setModalPreview} />}
 
     </div>
   )
