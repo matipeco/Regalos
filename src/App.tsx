@@ -74,11 +74,18 @@ function App() {
   return (
     <div className="container">
       <h1 className="titulo-regalos">Regalos</h1>
-      {regalos.length !== 0 && (
-        <button onClick={handleClear} className="button-borrar">
-          Borrar todos
-        </button>
-      )}
+      <div className="container-buttons">
+        {regalos.length !== 0 && (
+          <button onClick={handleClear} className="button-borrar">
+            <span>Eliminar regalos</span>
+          </button>
+        )}
+        {regalos.length > 0 && (
+          <button className="button-prev" onClick={openModalPreview}>
+            prev
+          </button>
+        )}
+      </div>
 
       {regalos.length === 0 ? (
         <p className="noRegalos">¡Aun no hay regalos! 🙁</p>
@@ -97,13 +104,11 @@ function App() {
         </ul>
       )}
       {regalos.length > 0 && (
-        <p className="priceTotal">Total: $ {TOTAL_PRICE} </p>
+        <p className="priceTotal">
+          Total: <span className="price"> ${TOTAL_PRICE} </span>
+        </p>
       )}
-      {regalos.length > 0 && (
-        <button className="button-prev" onClick={openModalPreview}>
-          Previsualizar
-        </button>
-      )}
+
       <button className="button-agregar" onClick={() => openModal("create")}>
         Agregar Regalos
       </button>

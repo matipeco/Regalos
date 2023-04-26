@@ -117,6 +117,7 @@ export const StyledModal = styled.div`
                 background-color: rgba(255, 255, 255, 0.4);
                 border-radius: 5px;
                 border: none;
+                text-align: center;
               }
             } 
     } 
