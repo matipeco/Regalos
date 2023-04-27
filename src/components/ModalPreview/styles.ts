@@ -11,14 +11,37 @@ export const StyleModalPreview = styled.div`
     .modal{
         padding: 30px;
         display: flex;
-        /* justify-content: center;
-        align-items: center; */
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column;
         position:relative;
         box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
         /* max-width: 500px; */
         /* min-width: 30px; */
         background-color: var(--red);
         border-radius:5px;
+        &__titulo{
+            padding-bottom: 30px;
+            text-align: center;
+            font-family: "Mountains of Christmas", cursive;
+            font-weight: 800;
+            font-size: 45px;
+            letter-spacing: 5px;
+            color: white;
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.9);
+            position: relative;
+            &::after {
+                content: "";
+                position: absolute;
+                top: 85%;
+                left: 30%;
+                width: 40%;
+                height: 1px;
+                background-color: white;
+                box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
+                opacity: 0.5;
+            }
+        }
         &__button{
             position: absolute;
             top: 0;

@@ -32,6 +32,7 @@ export const ModalPreview: FunctionComponent<Props> = ({
   return (
     <StyleModalPreview ref={ref}>
       <div className="modal">
+        <p className="modal__titulo">Comprar</p>
         <button
           className="modal__button"
           onClick={() => setModalPreview(false)}
