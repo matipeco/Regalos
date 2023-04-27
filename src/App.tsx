@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Modal } from "./components/Modal";
 import { Regalo } from "./components/Regalo";
 import { ModalPreview } from "./components/ModalPreview";
+import Delete from "./components/Icons/Delete";
 
 export type Regalos = {
   id: string;
@@ -76,13 +77,17 @@ function App() {
       <h1 className="titulo-regalos">Regalos</h1>
       <div className="container-buttons">
         {regalos.length !== 0 && (
-          <button onClick={handleClear} className="button-borrar">
-            <span>Eliminar regalos</span>
+          <button
+            onClick={handleClear}
+            className="button-borrar"
+            aria-label="Eliminar todos los regalos"
+          >
+            <Delete />
           </button>
         )}
         {regalos.length > 0 && (
           <button className="button-prev" onClick={openModalPreview}>
-            prev
+            Previsualizar Regalos
           </button>
         )}
       </div>
