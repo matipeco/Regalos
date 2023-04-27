@@ -7,7 +7,7 @@
 <br />
 <ul>
   <h3>El usuario podrá: </h3>
-<br />
+
 
 
 <li>Crear una lista de regalos cargando cada regalo a través de un formulario en un Modal.</li>
