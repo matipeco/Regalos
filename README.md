@@ -11,7 +11,7 @@
 
 
 <li>Crear una lista de regalos cargando cada regalo a través de un formulario en un Modal.</li>
-<li>Generar un regalo random a través del boton "Sorprendeme" si el usuario no sabe que regalar</li>
+<li>Generar un regalo random a través del boton "Sorprendeme" si el usuario no sabe que regalar.</li>
 <li>Editar, duplicar, y eliminar un regalo en particular. </li>
 <li>Editar, duplicar, y eliminar un regalo en particular. </li>
 <li>Visualizar la suma total de los regalos.</li>
