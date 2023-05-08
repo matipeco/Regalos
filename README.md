@@ -1,5 +1,5 @@
 &nbsp;
-<h2 align="center">Chirstmas Gifts</h2>
+<h2 align="center">Christmas Gifts</h2>
 
 <h4>Es una aplicacion web responsive con el fin de practicar codigo usando tecnologías como: React, Typescript, StyledComponents, Vite.
 <br />
