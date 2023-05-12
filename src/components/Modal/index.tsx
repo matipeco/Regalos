@@ -23,11 +23,22 @@ type Props = {
 };
 
 const REGALOS_RANDOM = [
-  "boxer",
-  "desodorante",
-  "clarinete",
-  "destornillador",
-  "raqueta",
+  "Medias",
+  "Pelota",
+  "Paleta",
+  "Crayones",
+  "Libro",
+  "Tarjeta de regalo",
+  "Auriculares",
+  "Pase de spa",
+  "Suéter",
+  "Pintura",
+  "Juego de mesa",
+  "Set de cuidado personal",
+  "Raqueta de tenis",
+  "Collar",
+  "Guitarra",
+  "Cafetera",
 ];
 
 export const Modal: FunctionComponent<Props> = ({
